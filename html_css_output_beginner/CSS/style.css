@@ -1,0 +1,41 @@
+.container {
+    width: 960px;
+    padding: 0 4%;
+    margin: 0 auto;
+}
+
+h1 {
+    background-color: #364052;
+    width: 100px;
+    font-size: 20px;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+
+}
+
+ul li {
+    display: inline;
+    list-style: none;
+
+}
+
+.main_visual {
+    height: 600px;
+    width: 100vw;
+    margin: 0 calc(50% - 50vw);
+    /* 👇これがないと画像の比率がおかしくなる */
+    object-fit: cover;
+    margin-bottom: 50px;
+}
+
+h2 {
+    display: inline-block;
+    font-size: 24px;
+    border-bottom: 1px solid #000;
+    margin: 0 auto;
+}
+
+img.selfie {
+    border-radius: 75px;
+}
