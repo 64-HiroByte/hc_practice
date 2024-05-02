@@ -5,7 +5,8 @@
 }
 
 header {
-    background-color: aqua;
+    display: flex;
+    justify-content: space-between;
 }
 
 h1 {
@@ -18,10 +19,15 @@ h1 {
 
 }
 
-ul li {
-    display: inline;
-    list-style: none;
+ul {
+    display: flex;
+    list-style-type: none;
+    width: 250px;
+    justify-content: space-between;
+}
 
+ul li {
+    margin-top: 5px;
 }
 
 .main_visual {
