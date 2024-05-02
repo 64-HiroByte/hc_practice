@@ -4,6 +4,10 @@
     margin: 0 auto;
 }
 
+header {
+    background-color: aqua;
+}
+
 h1 {
     background-color: #364052;
     width: 100px;
@@ -28,14 +32,41 @@ ul li {
     object-fit: cover;
     margin-bottom: 50px;
 }
+/* 開発中のみ指定 */
+main {
+    background-color: khaki;
+}
+
+.introduction {
+    display: grid;
+    grid-template-columns: auto 150px;
+    grid-template-rows: 25px auto;
+    
+}
+
+p.title {
+    grid-column: 1;
+    font-size: 20px;
+    background-color: red;
+}
+
+p.text {
+    grid-column: 1;
+    font-size: 18px;
+
+}
+
+
 
 h2 {
     display: inline-block;
-    font-size: 24px;
+    font-size: 28px;
     border-bottom: 1px solid #000;
-    margin: 0 auto;
+    margin: 0 auto 30px auto;
 }
 
 img.selfie {
     border-radius: 75px;
+    grid-column: 2;
+    grid-row: 1 / 3;
 }
