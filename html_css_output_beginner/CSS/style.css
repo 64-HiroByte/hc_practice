@@ -1,34 +1,47 @@
+@charset "UTF-8";
+
 .container {
     width: 960px;
-    padding: 0 4%;
     margin: 0 auto;
     border: 1px solid #000;
+    background-color: darkcyan;
+}
+
+.wrapper {
+    max-width: 960px;
+    padding: 0 4%;
 }
 
 header {
+    grid-column: 2;
     display: flex;
     justify-content: space-between;
+    height: 60px;
+    padding: 0 4%;
 }
 
 h1 {
     background-color: #364052;
-    width: 100px;
+    width: 120px;
+    height: 20px;
     font-size: 20px;
     color: #fff;
     text-align: center;
-    padding: 5px;
+    padding: 10px 0;
+    margin-top: 10px;
 
 }
 
 ul {
-    display: flex;
     list-style-type: none;
-    width: 250px;
+    display: flex;
     justify-content: space-between;
+    width: 190px;
+    margin-top: 24px;
 }
 
 ul li {
-    margin-top: 5px;
+    font-size: 12px;
 }
 
 .main_visual {
@@ -37,7 +50,7 @@ ul li {
     margin: 0 calc(50% - 50vw);
     /* 👇これがないと画像の比率がおかしくなる */
     object-fit: cover;
-    margin-bottom: 50px;
+    margin-bottom: 90px;
 }
 
 /* 開発中のみ指定 */
@@ -45,59 +58,65 @@ main {
     background-color: khaki;
     display: grid;
     grid-template-rows: auto auto;
-    
 }
 
 section {
-    margin-bottom: 100px;
+    margin: 0 auto 110px auto;
 }
 
 h2 {
     text-align: center;
-    font-size: 28px;
-    margin-bottom: 30px;
+    font-size: 30px;
+    margin-bottom: 50px;
 }
 
 .under_line {
-    padding-bottom: 3px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #000;
 }
 
 .introduction {
     display: grid;
-    grid-template-columns: 50px auto 150px 50px;
+    grid-template-columns: auto 620px 100px auto;
+    grid-template-rows: 45px auto;
     margin: 0 auto;
 }
 
 .title {
     grid-column: 2;
-    font-size: 20px;
+    font-size: 18px;
+    padding-top: 5px;
+    background-color: aqua;
 }
 
 .text {
     grid-column: 2;
-    font-size: 18px;
-    line-height: 1.5em;
+    font-size: 14px;
+    line-height: 1.6em;
 }
 
 img.selfie {
-    border-radius: 75px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
     grid-column: 3;
     grid-row: 1 / 3;
 }
 
 .profile_images {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 5px;
+    grid-template-columns: repeat(3, 260px);
+    gap: 16px;
 }
 
 .profile .title {
     text-align: center;
+    margin-bottom: 5px;
 }
 
 .profile .text {
     text-align: center;
+    background-color: blue;
 }
 
 .profile img {
@@ -108,5 +127,5 @@ img.selfie {
 
 footer {
     text-align: center;
-    padding-bottom: 20px;
+    margin-bottom: 10px;
 }
