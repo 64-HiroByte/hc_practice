@@ -1,9 +1,10 @@
 @charset "UTF-8";
 
 .container {
-    width: 960px;
-    margin: 0 auto;
-    border: 1px solid #000;
+    /* width: 960px; */
+    /* margin: 0 auto; */
+
+    /* 開発中のみ表示 */
     background-color: darkcyan;
 }
 
@@ -13,11 +14,10 @@
 }
 
 header {
-    grid-column: 2;
     display: flex;
     justify-content: space-between;
     height: 60px;
-    padding: 0 4%;
+    margin: 0 auto;
 }
 
 h1 {
@@ -47,7 +47,7 @@ ul li {
 .main_visual {
     height: 600px;
     width: 100vw;
-    margin: 0 calc(50% - 50vw);
+    /* margin: 0 calc(50% - 50vw); */
     /* 👇これがないと画像の比率がおかしくなる */
     object-fit: cover;
     margin-bottom: 90px;
@@ -56,18 +56,22 @@ ul li {
 /* 開発中のみ指定 */
 main {
     background-color: khaki;
-    display: grid;
-    grid-template-rows: auto auto;
+    display: block;
+    margin: 0 auto;
+    /* display: grid;
+    grid-template-rows: auto auto; */
 }
 
 section {
-    margin: 0 auto 110px auto;
+    margin: 0 auto;
 }
 
 h2 {
     text-align: center;
     font-size: 30px;
-    margin-bottom: 50px;
+    font-weight: 500;
+    margin-bottom: 60px;
+    /* margin-bottom: 75px; */
 }
 
 .under_line {
@@ -79,23 +83,24 @@ h2 {
     display: grid;
     grid-template-columns: auto 620px 100px auto;
     grid-template-rows: 45px auto;
-    margin: 0 auto;
+    margin-bottom: 115px;
 }
 
-.title {
+h3 {
     grid-column: 2;
     font-size: 18px;
+    font-weight: 400;
     padding-top: 5px;
     background-color: aqua;
 }
 
 .text {
     grid-column: 2;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.6em;
 }
 
-img.selfie {
+.introduction .selfie {
     width: 100px;
     height: 100px;
     border-radius: 50%;
@@ -105,17 +110,21 @@ img.selfie {
 
 .profile_images {
     display: grid;
-    grid-template-columns: repeat(3, 260px);
-    gap: 16px;
+    width: 84%;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2%;
+    /* margin-bottom: 110px; */
+    margin: 0 auto 110px auto;
 }
 
-.profile .title {
+.profile h3 {
     text-align: center;
-    margin-bottom: 5px;
+    margin-bottom: 20px;
 }
 
 .profile .text {
     text-align: center;
+    margin-bottom: 15px;
     background-color: blue;
 }
 
