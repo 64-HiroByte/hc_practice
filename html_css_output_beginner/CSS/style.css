@@ -25,6 +25,7 @@ header {
     display: flex;
     justify-content: space-between;
     height: 60px;
+    align-items: center;
 }
 
 h1 {
@@ -35,20 +36,18 @@ h1 {
     color: #fff;
     text-align: center;
     padding: 10px 0;
-    margin-top: 10px;
 
 }
 
 ul {
     list-style-type: none;
     display: flex;
-    margin-top: 22px;
+    gap: 30px;
 }
 
 ul li {
     font-size: 14px;
     font-weight: 200;
-    margin-left: 30px;
 }
 
 
