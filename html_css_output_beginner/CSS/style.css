@@ -42,12 +42,12 @@ h1 {
 ul {
     list-style-type: none;
     display: flex;
-    justify-content: space-between;
     margin-top: 22px;
 }
 
 ul li {
     font-size: 14px;
+    font-weight: 200;
     margin-left: 30px;
 }
 
@@ -65,7 +65,7 @@ ul li {
 
 
 /* --- introduction --- */
-section.introduction{
+.introduction{
     width: 82.09%;
     margin: 0 auto;
 }
@@ -91,7 +91,7 @@ h2 {
 
 h3 {
     font-size: 18px;
-    font-weight: 400;
+    font-weight: 500;
 }
 
 .text_contents h3 {
@@ -104,16 +104,19 @@ h3 {
     line-height: 1.4em;
 }
 
-.selfie{
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
+.selfie {
     grid-column: 3;
     grid-row: 1 / 3;
 }
 
+.selfie img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
 
-/* --- profiel_images --- */
+
+/* --- profile_images --- */
 .profile_images {
     width: 91.26%;
     margin: 0 auto 110px auto;
@@ -149,4 +152,46 @@ h3 {
 footer.wrapper{
     text-align: center;
     margin-bottom: 10px;
+}
+
+
+/* -------------------------------
+        SP画面表示設定
+----------------------------------*/
+@media screen and (max-width: 600px) {
+
+    /* --- introduction --- */
+    .introduction{
+        width: 100%;
+    }
+    
+    .introduction_contents {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+    
+    .selfie {
+        grid-column: 1;
+        grid-row: 2;
+        margin: 0 auto;
+    }
+    
+    .text_contents {
+        margin-bottom: 15px;
+    }
+    
+    .text_contents h3 {
+        text-align: center;
+    }
+    
+    
+    /* --- profile_images --- */
+    .profile_images {
+        width: 100%;
+    }
+    
+    .profile_contents {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
 }
