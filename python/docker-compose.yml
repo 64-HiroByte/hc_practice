@@ -1,0 +1,10 @@
+
+services:
+  app:
+    build: .
+    volumes:
+      - '.:/python'
+
+    tty: true
+    stdin_open: true
+
