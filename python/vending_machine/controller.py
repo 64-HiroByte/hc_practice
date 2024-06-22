@@ -13,14 +13,14 @@ def perchase_beverage(beverage):
     # [TODO]購入前のバリデーションチェック
     
     vending_machine.stock_dict[beverage] -= 1
-    vending_machine.proceed = 150  # 150は購入したジュースの値段
-    suica.deposit = -150  # 150は購入したジュースの値段
+    vending_machine.proceed = beverage.price  # 150は購入したジュースの値段
+    suica.deposit = -beverage.price  # 150は購入したジュースの値段
     
     
 '**************************************************************'
 
 '''
-- 自動販売機の在庫取得 -> vending_machineのgetterで設定すればよい
+- ✅自動販売機の在庫取得 -> vending_machineのgetterで設定すればよい
 - 自動販売機の売り上げ金額の取得 -> vending_machineのgetterで設定すればよい
 
 - ジュースの一覧表示（在庫も含む）
@@ -38,23 +38,27 @@ def perchase_beverage(beverage):
 
 
 DEFAULT_DEPOSIT = 500
-PRICE_DICT = {'ペプシ': 150, 'いろはす': 120, 'モンスター': 230}
+# PRICE_DICT = {'ペプシ': 150, 'いろはす': 120, 'モンスター': 230}
 default_stock = {'ペプシ': 5, }  # [TODO] 機能拡張で全商品の在庫を５にする
 
 # インスタンス化
 suica = Suica(DEFAULT_DEPOSIT)
 vending_machine = VendingMachine(default_stock)
-print(vending_machine.proceed, vending_machine.stock_dict)
+
+pepsi = Juice(name='ペプシ', price=150)
+monster = Juice(name='モンスター', price=230)
+ilohas = Juice(name='いろはす', price=120)
 
 
-# チャージ処理
-input_amount = int(input('チャージする金額を入力してください（最低チャージ額: 100円） > '))
-charge_to_suica(input_amount)
+# print(vending_machine.proceed, vending_machine.stock_dict)
 
-print(f'Suicaの残高: {suica.deposit}円')
 
-# 購入
-perchase_beverage('ペプシ')
-print(vending_machine.stock_dict)
-print(vending_machine.proceed)
-print(suica.deposit)
+# # チャージ処理
+# input_amount = int(input('チャージする金額を入力してください（最低チャージ額: 100円） > '))
+# charge_to_suica(input_amount)
+
+# # 購入
+# perchase_beverage('ペプシ')
+# print(vending_machine.stock_dict)
+# print(vending_machine.proceed)
+# print(suica.deposit)

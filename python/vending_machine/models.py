@@ -26,9 +26,10 @@ class Juice(object):
     - 名前と値段の情報を持つ
     '''
     
-    def __init__(self, name, price_dict):
+    def __init__(self, name, price):
         self.name = name
-        self.price = price_dict[name]
+        # self.price = price_dict[name]
+        self.price =price
 
 
 class VendingMachine(object):
@@ -86,7 +87,3 @@ class VendingMachine(object):
 # vm = VendingMachine(default_stock=default_stock)
 # vm.stock_dict['ペプシ'] += -1  # 購入による在庫の減算
 # print(vm.stock_dict)
-
-# PRICE_DICT = {'ペプシ': 150, 'いろはす': 120, 'モンスター': 230}
-# beverage = Juice('ペプシ', PRICE_DICT)
-# print(beverage.name, beverage.price)
