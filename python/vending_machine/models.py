@@ -56,7 +56,7 @@ class VendingMachine(object):
         return self.__proceed  # 自販機の売上金額の取得
     
     @proceed.setter
-    def deposit(self, price):
+    def proceed(self, price):
         self.__proceed += price  # 自販機の売上金額に商品代金を加算
     
     @property
@@ -76,13 +76,17 @@ class VendingMachine(object):
     #     pass
     
 # 商品の初期在庫
-default_stock = {'ペプシ': 5, }  # [TODO] 機能拡張で全商品の在庫を５にする
+# default_stock = {'ペプシ': 5, }  # [TODO] 機能拡張で全商品の在庫を５にする
 
 
     # vending_machine = VendingMachine(default_stock)
     # vending_machine.stock_dict['いろはす'] = 5
     # print(vending_machine.stock_dict)
     
-vm = VendingMachine(default_stock=default_stock)
-vm.stock_dict['ペプシ'] += -1  # 購入による在庫の減算
-print(vm.stock_dict)
+# vm = VendingMachine(default_stock=default_stock)
+# vm.stock_dict['ペプシ'] += -1  # 購入による在庫の減算
+# print(vm.stock_dict)
+
+# PRICE_DICT = {'ペプシ': 150, 'いろはす': 120, 'モンスター': 230}
+# beverage = Juice('ペプシ', PRICE_DICT)
+# print(beverage.name, beverage.price)

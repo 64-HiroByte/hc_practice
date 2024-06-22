@@ -9,7 +9,14 @@ def charge_to_suica(amount):
     else:
         print('[exeption] 100円未満のチャージはできません')
 
-
+def perchase_beverage(beverage):
+    # [TODO]購入前のバリデーションチェック
+    
+    vending_machine.stock_dict[beverage] -= 1
+    vending_machine.proceed = 150  # 150は購入したジュースの値段
+    suica.deposit = -150  # 150は購入したジュースの値段
+    
+    
 '**************************************************************'
 
 '''
@@ -46,3 +53,8 @@ charge_to_suica(input_amount)
 
 print(f'Suicaの残高: {suica.deposit}円')
 
+# 購入
+perchase_beverage('ペプシ')
+print(vending_machine.stock_dict)
+print(vending_machine.proceed)
+print(suica.deposit)
