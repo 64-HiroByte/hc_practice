@@ -4,21 +4,15 @@ class Suica(object):
     - 100円未満はチャージできない（例外を発生する）
     - 残高を取得できる
     '''
-    id = 0
-    
     def __init__(self, deposit):
-        self.__deposit = deposit  # depositは名前修飾する?
-        self.id = Suica.id
-        Suica.id += 1
+        self.__balance = deposit 
     
-    @property
-    def deposit(self):
-        return self.__deposit
+    def show_balance(self):
+        return self.__balance
     
-    @deposit.setter
-    def deposit(self, amount):
-        if amount >= 100:
-            self.__deposit += amount  # 支払いの場合は-amount
+    def charge_to_suica(self, amount):
+        # if amount >= 100:
+        self.__balance += amount  # 支払いの場合は-amount
 
 
 class Juice(object):
@@ -29,7 +23,7 @@ class Juice(object):
     
     def __init__(self, name, price):
         self.name = name
-        self.price =price
+        self.price = price
     
     @property
     def count(self):
@@ -38,7 +32,6 @@ class Juice(object):
     @count.setter
     def count(self, num):
         self._count = num
-    
     
 class Pepsi(Juice):
     def __init__(self, name, price):
@@ -50,8 +43,8 @@ class Pepsi(Juice):
 class Monster(Juice):
     def __init__(self, name, price):
         super().__init__(name, price)
-        self.count = Monster.count
-        Monster.count += 1
+        self._count = Monster.count
+        Monster._count += 1
 
 
 class Ilohas(Juice):
@@ -79,15 +72,13 @@ class VendingMachine(object):
     # 在庫と売上金の初期設定
     def __init__(self, default_stock):
         self._stock_dict = default_stock
-        self.__proceed = 0
+        self.__proceeds = 0
     
-    @property
-    def proceed(self):
-        return self.__proceed  # 自販機の売上金額の取得
+    def show_proceeds(self):
+        return self.__proceeds  # 自販機の売上金額の取得
     
-    @proceed.setter
-    def proceed(self, price):
-        self.__proceed += price  # 自販機の売上金額に商品代金を加算
+    def add_to_proceeds(self, price):
+        self.__proceeds += price  # 自販機の売上金額に商品代金を加算
     
     @property
     def stock_dict(self):
@@ -116,14 +107,13 @@ class VendingMachine(object):
 # vm = VendingMachine(default_stock=default_stock)
 # vm.stock_dict['ペプシ'] += -1  # 購入による在庫の減算
 # print(vm.stock_dict)
-for _ in range(5):
-    pepsi = Pepsi(name='ペプシ', price=150)
-for _ in range(13):
-    ilohas = Ilohas(name='いろはす', price=120)
+# for _ in range(5):
+#     pepsi = Pepsi(name='ペプシ', price=150)
+# for _ in range(13):
+#     ilohas = Ilohas(name='いろはす', price=120)
 
-print(pepsi.count, ilohas.count)
-pepsi.count += 1
-print(pepsi.count, ilohas.count)
-ilohas.count -= 10
-print(pepsi.count, ilohas.count)
-
+# print(pepsi.name, ilohas.name)
+# print(pepsi.count, ilohas.count)
+# pepsi.count += 1
+# ilohas.count -= 10
+# print(pepsi.count, ilohas.count)

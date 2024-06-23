@@ -39,15 +39,15 @@ def perchase_beverage(beverage):
 
 DEFAULT_DEPOSIT = 500
 # PRICE_DICT = {'ペプシ': 150, 'いろはす': 120, 'モンスター': 230}
-default_stock = {'ペプシ': 5, }  # [TODO] 機能拡張で全商品の在庫を５にする
+# default_stock = {'ペプシ': 5, }  # [TODO] 機能拡張で全商品の在庫を５にする
 
 # インスタンス化
 suica = Suica(DEFAULT_DEPOSIT)
 vending_machine = VendingMachine(default_stock)
 
-pepsi = Juice(name='ペプシ', price=150)
-monster = Juice(name='モンスター', price=230)
-ilohas = Juice(name='いろはす', price=120)
+pepsi = Juice(_name='ペプシ', price=150)
+monster = Juice(_name='モンスター', price=230)
+ilohas = Juice(_name='いろはす', price=120)
 
 
 # print(vending_machine.proceed, vending_machine.stock_dict)
