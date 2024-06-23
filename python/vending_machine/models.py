@@ -7,51 +7,21 @@ class Suica(object):
     def __init__(self, deposit):
         self.__balance = deposit 
     
+    def add_balance(self, amount):
+        self.__balance += amount  # 支払いの場合は-amount
+    
     def show_balance(self):
         return self.__balance
-    
-    def charge_to_suica(self, amount):
-        # if amount >= 100:
-        self.__balance += amount  # 支払いの場合は-amount
 
 
 class Juice(object):
     '''
     - 名前と値段の情報を持つ
     '''
-    _count = 1
     
     def __init__(self, name, price):
         self.name = name
         self.price = price
-    
-    @property
-    def count(self):
-        return self._count
-    
-    @count.setter
-    def count(self, num):
-        self._count = num
-    
-class Pepsi(Juice):
-    def __init__(self, name, price):
-        super().__init__(name, price)
-        self._count = Pepsi._count
-        Pepsi._count += 1
-
-
-class Monster(Juice):
-    def __init__(self, name, price):
-        super().__init__(name, price)
-        self._count = Monster.count
-        Monster._count += 1
-
-
-class Ilohas(Juice):
-    def __init__(self, name, price):
-        super().__init__(name, price)
-        self._count = Ilohas._count
-        Ilohas._count += 1
 
 
 class VendingMachine(object):
@@ -77,7 +47,7 @@ class VendingMachine(object):
     def show_proceeds(self):
         return self.__proceeds  # 自販機の売上金額の取得
     
-    def add_to_proceeds(self, price):
+    def add_proceeds(self, price):
         self.__proceeds += price  # 自販機の売上金額に商品代金を加算
     
     @property
@@ -96,8 +66,6 @@ class VendingMachine(object):
     # def refill_beverage(self, juice, quantity):
     #     pass
     
-# 商品の初期在庫
-# default_stock = {'ペプシ': 5, }  # [TODO] 機能拡張で全商品の在庫を５にする
 
 
     # vending_machine = VendingMachine(default_stock)
@@ -107,13 +75,3 @@ class VendingMachine(object):
 # vm = VendingMachine(default_stock=default_stock)
 # vm.stock_dict['ペプシ'] += -1  # 購入による在庫の減算
 # print(vm.stock_dict)
-# for _ in range(5):
-#     pepsi = Pepsi(name='ペプシ', price=150)
-# for _ in range(13):
-#     ilohas = Ilohas(name='いろはす', price=120)
-
-# print(pepsi.name, ilohas.name)
-# print(pepsi.count, ilohas.count)
-# pepsi.count += 1
-# ilohas.count -= 10
-# print(pepsi.count, ilohas.count)
