@@ -25,11 +25,40 @@ class Juice(object):
     '''
     - 名前と値段の情報を持つ
     '''
+    _count = 1
     
     def __init__(self, name, price):
         self.name = name
-        # self.price = price_dict[name]
         self.price =price
+    
+    @property
+    def count(self):
+        return self._count
+    
+    @count.setter
+    def count(self, num):
+        self._count = num
+    
+    
+class Pepsi(Juice):
+    def __init__(self, name, price):
+        super().__init__(name, price)
+        self._count = Pepsi._count
+        Pepsi._count += 1
+
+
+class Monster(Juice):
+    def __init__(self, name, price):
+        super().__init__(name, price)
+        self.count = Monster.count
+        Monster.count += 1
+
+
+class Ilohas(Juice):
+    def __init__(self, name, price):
+        super().__init__(name, price)
+        self._count = Ilohas._count
+        Ilohas._count += 1
 
 
 class VendingMachine(object):
@@ -87,3 +116,14 @@ class VendingMachine(object):
 # vm = VendingMachine(default_stock=default_stock)
 # vm.stock_dict['ペプシ'] += -1  # 購入による在庫の減算
 # print(vm.stock_dict)
+for _ in range(5):
+    pepsi = Pepsi(name='ペプシ', price=150)
+for _ in range(13):
+    ilohas = Ilohas(name='いろはす', price=120)
+
+print(pepsi.count, ilohas.count)
+pepsi.count += 1
+print(pepsi.count, ilohas.count)
+ilohas.count -= 10
+print(pepsi.count, ilohas.count)
+
