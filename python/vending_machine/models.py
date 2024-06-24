@@ -40,8 +40,8 @@ class VendingMachine(object):
     '''
     
     # 在庫と売上金の初期設定
-    def __init__(self, default_stock):
-        self._stock_dict = default_stock
+    def __init__(self, inventory):
+        self._inventory = inventory
         self.__proceeds = 0
     
     def show_proceeds(self):
@@ -51,12 +51,12 @@ class VendingMachine(object):
         self.__proceeds += price  # 自販機の売上金額に商品代金を加算
     
     @property
-    def stock_dict(self):
-        return self._stock_dict  # 自販機の在庫情報の取得
+    def inventory(self):
+        return self._inventory  # 自販機の在庫情報の取得
     
-    @stock_dict.setter
-    def stock_dict(self, name, quantity):
-        self._stock_dict[name] += quantity  # 自販機の在庫の加減算
+    @inventory.setter
+    def inventory(self, name, quantity):
+        self._inventory[name] += quantity  # 自販機の在庫の加減算
     
     # 購入処理
     # def purchase_beverage(self, juice):

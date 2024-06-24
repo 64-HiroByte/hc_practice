@@ -26,6 +26,7 @@ def charge_to_suica(deposit):
     else:
         print('[exeption: small deposit error] 100円未満のチャージはできません')
 
+
 def create_juice(i, juice_list, num):
     """_summary_
 
@@ -36,39 +37,39 @@ def create_juice(i, juice_list, num):
     """
     created_juice = [Juice(name=juice_list[i][0], price=juice_list[i][1]) for _ in range(num)]
     return created_juice
-    # for _ in range(num):
-    #     juice = Juice(name=juice_list[i][0], price=juice_list[i][1])
-    # return juice, num
 
 
 def perchase_beverage(beverage):
     # [TODO]購入前のバリデーションチェック
     
-    vending_machine.stock_dict[beverage] -= 1
+    vending_machine.inventory[beverage] -= 1
     vending_machine.proceed = beverage.price  # 150は購入したジュースの値段
     suica.deposit = -beverage.price  # 150は購入したジュースの値段
     
     
+# 初期設定
 DEFAULT_DEPOSIT = 500
 JUICE_LIST = [('ペプシ', 150), ('モンスター', 230), ('いろはす', 120)]
+DEFAULT_NUM = 1
 
 # 在庫管理用の辞書を生成 -> インスタンス化したジュースはvalueのlistsの中にオブジェクトごと格納
 inventoty ={}
 for i in range(len(JUICE_LIST)):
-    inventoty[JUICE_LIST[i][0]] = []
+    created_list = create_juice(i=i, juice_list=JUICE_LIST, num=DEFAULT_NUM)
+    inventoty[JUICE_LIST[i][0]] = created_list
 
-# inventoty[JUICE_LIST[0][0]].extend(created_obj_list)
+# print(inventoty)
 
-# print(len(inventoty[JUICE_LIST[0][0]]))
+# inventoty[JUICE_LIST[0][0]].extend(created_obj_list)  ＃ インスタンス化したジュースクラスを在庫の辞書に格納する
 
-created_list = create_juice(i=0, juice_list=JUICE_LIST, num=3)
-print(created_list)
-for obj in created_list:
-    print(obj.name)
+# print(len(inventoty[JUICE_LIST[0][0]]))  ＃ len()で在庫を取得
+
+
 
 # インスタンス化
 suica = Suica(DEFAULT_DEPOSIT)
 vending_machine = VendingMachine(inventoty)
+print(vending_machine.inventory)
 
 # print(vending_machine.proceed, vending_machine.stock_dict)
 
