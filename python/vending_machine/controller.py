@@ -34,9 +34,11 @@ def create_juice(i, juice_list, num):
         juice_list (list): 使用可能なジュースの名前と値段のlist
         num (int): 作成するジュースの本数
     """
-    for _ in range(num):
-        juice = Juice(name=juice_list[i][0], price=juice_list[i][1])
-    return juice, num
+    created_juice = [Juice(name=juice_list[i][0], price=juice_list[i][1]) for _ in range(num)]
+    return created_juice
+    # for _ in range(num):
+    #     juice = Juice(name=juice_list[i][0], price=juice_list[i][1])
+    # return juice, num
 
 
 def perchase_beverage(beverage):
@@ -47,38 +49,26 @@ def perchase_beverage(beverage):
     suica.deposit = -beverage.price  # 150は購入したジュースの値段
     
     
-'**************************************************************'
-
-'''
-- ✅自動販売機の在庫取得 -> vending_machineのgetterで設定すればよい
-- 自動販売機の売り上げ金額の取得 -> vending_machineのgetterで設定すればよい
-
-- ジュースの一覧表示（在庫も含む）
-- 購入処理（validation）
-    - Suicaの残高が足りているか ->exception
-    - ジュースの在庫は0でないか -> exception
-- 購入処理
-    - 購入されたジュースの在庫を-1
-    - 売り上げ金額にジュースの値段を足す
-    - Suicaのチャージ額からジュースの値段を差し引く
-- 補充処理
-    - 自動販売機に在庫を補充して、任意のジュースの在庫を増やす
-'''
-
-
-
 DEFAULT_DEPOSIT = 500
-# PRICE_DICT = {'ペプシ': 150, 'いろはす': 120, 'モンスター': 230}
-default_stock = {'ペプシ': 5, }  # [TODO] 機能拡張で全商品の在庫を５にする
+JUICE_LIST = [('ペプシ', 150), ('モンスター', 230), ('いろはす', 120)]
+
+# 在庫管理用の辞書を生成 -> インスタンス化したジュースはvalueのlistsの中にオブジェクトごと格納
+inventoty ={}
+for i in range(len(JUICE_LIST)):
+    inventoty[JUICE_LIST[i][0]] = []
+
+# inventoty[JUICE_LIST[0][0]].extend(created_obj_list)
+
+# print(len(inventoty[JUICE_LIST[0][0]]))
+
+created_list = create_juice(i=0, juice_list=JUICE_LIST, num=3)
+print(created_list)
+for obj in created_list:
+    print(obj.name)
 
 # インスタンス化
 suica = Suica(DEFAULT_DEPOSIT)
-vending_machine = VendingMachine(default_stock)
-
-pepsi = Juice(name='ペプシ', price=150)
-monster = Juice(name='モンスター', price=230)
-ilohas = Juice(name='いろはす', price=120)
-
+vending_machine = VendingMachine(inventoty)
 
 # print(vending_machine.proceed, vending_machine.stock_dict)
 
