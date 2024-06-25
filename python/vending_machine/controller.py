@@ -39,12 +39,15 @@ def create_juice(i, juice_list, num):
     return created_juice
 
 
-def perchase_beverage(beverage):
+def perchase_beverage(i, juice_list, suica):
     # [TODO]購入前のバリデーションチェック
     
-    vending_machine.inventory[beverage] -= 1
-    vending_machine.proceed = beverage.price  # 150は購入したジュースの値段
-    suica.deposit = -beverage.price  # 150は購入したジュースの値段
+    # 購入可能な場合の処理
+    # 前提： JUICE_LISTをview.pyで表示させて、標準入力されたJUICE＿LISTのindex No（i）を使用する
+    perchased_juice = vending_machine.inventory[i].pop(0)  # pop()によって在庫は1本減る
+    suica.add_balance(-perchased_juice.price) 
+    vending_machine.add_proceeds(perchased_juice.price)
+    
     
     
 # 初期設定
