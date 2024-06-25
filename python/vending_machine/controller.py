@@ -49,27 +49,20 @@ def perchase_beverage(beverage):
     
 # 初期設定
 DEFAULT_DEPOSIT = 500
-JUICE_LIST = [('ペプシ', 150), ('モンスター', 230), ('いろはす', 120)]
-DEFAULT_NUM = 1
+JUICE_LIST = [('ペプシ', 150), ('モンスター', 230), ('いろはす', 120)] # nameはJUICE_LIST[i][0], priceはJUICE_LIST[i][1]
+DEFAULT_NUM = 5
 
-# 在庫管理用の辞書を生成 -> インスタンス化したジュースはvalueのlistsの中にオブジェクトごと格納
-inventoty ={}
+# 在庫管理用のリストを生成
+inventoty = []
 for i in range(len(JUICE_LIST)):
     created_list = create_juice(i=i, juice_list=JUICE_LIST, num=DEFAULT_NUM)
-    inventoty[JUICE_LIST[i][0]] = created_list
-
-# print(inventoty)
-
-# inventoty[JUICE_LIST[0][0]].extend(created_obj_list)  ＃ インスタンス化したジュースクラスを在庫の辞書に格納する
-
-# print(len(inventoty[JUICE_LIST[0][0]]))  ＃ len()で在庫を取得
-
-
+    inventoty.append(created_list)
 
 # インスタンス化
 suica = Suica(DEFAULT_DEPOSIT)
 vending_machine = VendingMachine(inventoty)
-print(vending_machine.inventory)
+
+
 
 # print(vending_machine.proceed, vending_machine.stock_dict)
 
