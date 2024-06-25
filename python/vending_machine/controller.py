@@ -3,21 +3,29 @@ from models import Suica
 from models import VendingMachine
 
 # input()のバリデーションチェック int型か判定　 -- views.pyで呼び出す
-def input_value_validation(input_value):
-    try:
-        return int(input_value)
-    except ValueError:
-        print('正しい値を入力してください')
-    
-    
+def input_value_validation(txt):
+    while True:
+        try:
+            input_value = int(input(txt))
+        except ValueError:
+            print('[ValueError] 正しい値を入力してください')
+            continue
+        else:
+            break
+    return input_value
+
+
 # input()のバリデーションチェック　選択肢から選択しているか判定 -- views.pyで呼び出す
 def selectable_validation(input_value, options):
-    try:
-        if input_value in options:
-            return input_value
-    except:
-        print('選択肢の中から選んでください')
-
+    while True:
+        try:  # try-except使わないでif文でいいかも？
+            if input_value in options:
+                pass
+        except:
+            print('選択肢の中から選んでください')
+        else:
+            break
+    # return input_value
 
 # Suicaへ入金
 def charge_to_suica(deposit):
@@ -39,15 +47,19 @@ def create_juice(i, juice_list, num):
     return created_juice
 
 
-def perchase_beverage(i, juice_list, suica):
+def perchase_juice(i, juice_list, suica):
     # [TODO]購入前のバリデーションチェック
     
     # 購入可能な場合の処理
     # 前提： JUICE_LISTをview.pyで表示させて、標準入力されたJUICE＿LISTのindex No（i）を使用する
+    print(f'購入前のSuicaの残高 {suica.show_balance()}')
     perchased_juice = vending_machine.inventory[i].pop(0)  # pop()によって在庫は1本減る
-    suica.add_balance(-perchased_juice.price) 
-    vending_machine.add_proceeds(perchased_juice.price)
     
+    suica.add_balance(-perchased_juice.price) 
+    print(f'購入後のSuicaの残高 {suica.show_balance()}')
+    print(f'購入前の自販機の売上金合計 {suica.show_balance()}')
+    vending_machine.add_proceeds(perchased_juice.price)
+    print(f'購入後の自販機の売上金合計 {suica.show_balance()}')
     
     
 # 初期設定
@@ -61,21 +73,25 @@ for i in range(len(JUICE_LIST)):
     created_list = create_juice(i=i, juice_list=JUICE_LIST, num=DEFAULT_NUM)
     inventoty.append(created_list)
 
-# インスタンス化
+# SuicatとVendingMachineクラスのインスタンス化
 suica = Suica(DEFAULT_DEPOSIT)
 vending_machine = VendingMachine(inventoty)
 
+# [0]:Suicaのチャージ / [1]: ジュースの購入 / [2]: ジュースの補充から選択
+
+# [0]: Suicaのチャージ
+
+print(f'現在の残高は {suica.show_balance()} 円です。')  # view.py or templates/template.txtへ
+txt = 'Suicaへのチャージ金額を入力してください（最低チャージ額: 100円） > '  # view.py or templates/template.txtへ
+
+deposit = input_value_validation(txt)
+
+charge_to_suica(deposit=deposit)
+print(f'現在の残高は {suica.show_balance()} 円です。')
 
 
-# print(vending_machine.proceed, vending_machine.stock_dict)
+# [1]: ジュースの購入
 
 
-# # チャージ処理
-# input_amount = int(input('チャージする金額を入力してください（最低チャージ額: 100円） > '))
-# charge_to_suica(input_amount)
 
-# # 購入
-# perchase_beverage('ペプシ')
-# print(vending_machine.stock_dict)
-# print(vending_machine.proceed)
-# print(suica.deposit)
+# [2]: ジュースの補充
