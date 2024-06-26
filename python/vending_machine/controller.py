@@ -1,31 +1,16 @@
+import view
 from models import Juice
 from models import Suica
 from models import VendingMachine
 
-# input()のバリデーションチェック int型か判定　 -- views.pyで呼び出す
-def input_value_validation(txt):
-    while True:
-        try:
-            input_value = int(input(txt))
-        except ValueError:
-            print('[ValueError] 正しい値を入力してください')
-            continue
-        else:
-            break
-    return input_value
 
+# modeを選択 [0: Suicaにチャージ / 残高照会, 1: ジュースの購入, 2: ジュースの補充]
+def mode_select():
+    # view.pyの関数を指定: 画面表示 > 標準入力 >バリデーションチェック > 入力値をリターン
+    
+    
+    return
 
-# input()のバリデーションチェック　選択肢から選択しているか判定 -- views.pyで呼び出す
-def selectable_validation(input_value, options):
-    while True:
-        try:  # try-except使わないでif文でいいかも？
-            if input_value in options:
-                pass
-        except:
-            print('選択肢の中から選んでください')
-        else:
-            break
-    # return input_value
 
 # Suicaへ入金
 def charge_to_suica(deposit):
