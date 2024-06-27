@@ -69,7 +69,7 @@ vending_machine = VendingMachine(inventoty)
 print(f'現在の残高は {suica.show_balance()} 円です。')  # view.py or templates/template.txtへ
 txt = 'Suicaへのチャージ金額を入力してください（最低チャージ額: 100円） > '  # view.py or templates/template.txtへ
 
-deposit = input_value_validation(txt)
+deposit = view.input_value_validation(txt)
 
 charge_to_suica(deposit=deposit)
 print(f'現在の残高は {suica.show_balance()} 円です。')
