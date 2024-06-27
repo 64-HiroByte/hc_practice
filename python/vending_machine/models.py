@@ -51,11 +51,11 @@ class VendingMachine(object):
         self.__proceeds += price  # 自販機の売上金額に商品代金を加算
     
     @property
-    def inventory(self):
+    def stocks(self):
         return self._inventory  # 自販機の在庫情報の取得
     
-    @inventory.setter
-    def inventory(self, name, quantity):
+    @stocks.setter
+    def stocks(self, name, quantity):
         self._inventory[name] += quantity  # 自販機の在庫の加減算
     
     # 購入処理
