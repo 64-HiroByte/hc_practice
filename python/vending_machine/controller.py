@@ -4,7 +4,7 @@ from models import Suica
 from models import VendingMachine
 
 
-# Suicaへ入金（負の値で支払い）
+# Suicaへ入金
 def deposit_to_suica(deposit):
     if deposit >= 100:
         suica.add_balance(deposit)  # 正の値は残高チャージ
@@ -45,43 +45,60 @@ def get_stock_lists(juice_lists):
     return stock_lists  
 
 
-def charge_to_suica():
-    
+def is_purchasable(price):
+    """
+    引数priceとSuicaの残高を比較して購入可能か判定する
+
+    Args:
+        price (int): _description_
+
+    Returns:
+        bool: _description_
+    """    
+    if suica.show_balance() < price:
+        return False
+    else:
+        return True
+
+
+def charge_to_suica(suica):
     # while True:
-    
-    # [TODO] view.pyで現在のSuicaの残高を表示し、入金額を入力（バリデーションチェック含む）
-    
-    # Suicaへチャージ（100円未満はチャージ不可）
-    deposit_to_suica(deposit)
+    input_deposit = view.input_deposit(suica)
+    deposit_to_suica(input_deposit)
     
     # 入金後のSuicaの残高を表示
+    view.show_suica_balance(suica)
     
+    # [TODO] whileループするならbreakの条件を追記
 
 
 # ジュースの購入操作: whileループ
-def perchase_juice(juice_lists):
+def purchase_juice(juice_lists, min_price):
     # while True:
     
-    # Suicaの残高から購入可能か判定 --> [TODO]関数化
-    min_price = min([juice[1] for juice in juice_lists])
-    if suica.__balance < min_price:
+# Suicaの残高とジュースの在庫表示
+    view.show_suica_balance()
+    view.show_stock_lists(juice_lists)
+    
+# Suicaの残高から購入可能か判定
+    purchasable = is_purchasable(min_price)
+    if not purchasable:
         print(f'Suicaの残高が不足しています。最低でも{min_price}円以上の残高が必要です')
+        # break
     
-    # [TODO] 残高不足の場合の処理 -> exitする
-    
-    # 購入可能な場合の処理
-    stock_lists = get_stock_lists(juice_lists)
-    # [TODO] juice_listsとstock_listsをview.pyで表示
-    
-    
-    # 前提： JUICE_LISTSをview.pyで表示させて、標準入力されたJUICE＿LISTSのindex No（i）を使用する
-    print(f'購入前のSuicaの残高 {suica.show_balance()}')
+# 購入処理
+    txt = '購入したいジュースの番号を入力してください > '
+    i = view.choose_juice(juice_lists, txt)  # 選択したjuice_listsのindex番号 iを取得
     perchased_juice = vending_machine.stocks[i].pop(0)  # pop()によって在庫は1本減る
     
+# Suicaの残高から支払い
+    print(f'購入前のSuicaの残高 {suica.show_balance()}')
     suica.add_balance(-perchased_juice.price)  # ジュースの購入額をSuicaの残高から差し引く
     print(f'購入後のSuicaの残高 {suica.show_balance()}')
+    
+# 自動販売機に売上額を計上
     print(f'購入前の自販機の売上金合計 {vending_machine.show_balance()}')
-    vending_machine.add_proceeds(perchased_juice.price)  # 売上金の計上
+    vending_machine.add_proceeds(perchased_juice.price)
     print(f'購入後の自販機の売上金合計 {vending_machine.show_balance()}')
     
     # [TODO] ループするか、モード選択に戻るかの選択 -> view.pyの処理
@@ -89,11 +106,13 @@ def perchase_juice(juice_lists):
 
 # ジュースの補充: whileループ
 def replenish_juice(juice_lists):
-    # 在庫状況の取得
-    stock_lists = get_stock_lists(juice_lists) 
+# 在庫状況の取得
+    view.show_stock_lists(juice_lists)
     
-    # [TODO] 補充したいジュースの選択と本数の入力 --> view.py
-    
+# [TODO] 補充したいジュースの選択と本数の入力 --> view.py
+    txt = '補充するジュースの番号を入力してください > '
+    i = view.choose_juice(juice_lists, txt)
+    num = input('補充する本数を入力してください > ') # [TODO] 関数化する
     # 補充するジュースの生成(引数i, numはview.pyの関数実行時の返り値)
     replenish_juice = create_juice(i, juice_lists, num)
     
@@ -114,9 +133,12 @@ def mode_select(options):
 
 # 初期設定
 DEFAULT_DEPOSIT = 500
-JUICE_LISTS = [('ペプシ', 150), ('モンスター', 230), ('いろはす', 120)] # nameはJUICE_LIST[i][0], priceはJUICE_LIST[i][1]
+JUICE_LISTS = [('ペプシ', 150), ('モンスター', 230), ('いろはす', 120)]
 DEFAULT_NUM = 5
 MODE_OPTIONS = ('Suicaにチャージ', 'ジュースの購入', 'ジュースの補充')
+
+# 最も安いジュースの価格
+min_price = min([juice[1] for juice in JUICE_LISTS])
 
 # 在庫管理用のリストを生成
 stocks = []
@@ -134,20 +156,11 @@ mode = mode_select(MODE_OPTIONS)
 
 # [0]: Suicaにチャージ
 if mode == '0':
-    print(f'現在の残高は {suica.show_balance()} 円です。')  # view.py or templates/template.txtへ
-    txt = 'Suicaにチャージする金額を入力してください（最低チャージ額: 100円） > '  # view.py or templates/template.txtへ
-
-    deposit = view.input_value_validation(txt)
-
-    charge_to_suica(deposit=deposit)
-    print(f'現在の残高は {suica.show_balance()} 円です。')
+    charge_to_suica()
 
 # [1]: ジュースの購入
 if mode == '1':
-    # ジュースの名前と在庫本数の表示
-    
-    # ジュースの購入処理
-    perchase_juice(i, JUICE_LISTS)
+    purchase_juice(i, JUICE_LISTS)
 
 
 # [2]: ジュースの補充
