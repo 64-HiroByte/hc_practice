@@ -4,12 +4,12 @@ from models import Suica
 from models import VendingMachine
 
 
-# Suicaへ入金
-def deposit_to_suica(deposit):
-    if deposit >= 100:
-        suica.add_balance(deposit)  # 正の値は残高チャージ
-    else:  # [TODO] 独自例外の作成（myexceptions.py）
-        print('[exeption: small deposit error] 100円未満のチャージはできません')
+# Suicaへ入金 --- この関数はクラスの中に定義した
+# def deposit_to_suica(deposit):
+#     if deposit >= 100:
+#         suica.add_balance(deposit)  # 正の値は残高チャージ
+#     else:  # TODO 独自例外の作成（myexceptions.py）
+#         print('[exeption: small deposit error] 100円未満のチャージはできません')
 
 
 # ジュースインスタンスの生成
@@ -20,7 +20,7 @@ def create_juice(i, juice_lists, num):
     Args:
         i (int): juice_listsを表示して、標準入力された値（インデックス番号）
         juice_lists (list): 使用可能なジュースの名前と値段のlist
-        num (int): 作成するジュースの本数
+        num (int): 生成するジュースの本数
     """
     created_juice = [Juice(name=juice_lists[i][0], price=juice_lists[i][1]) for _ in range(num)]
     
@@ -61,15 +61,33 @@ def is_purchasable(price):
         return True
 
 
-def charge_to_suica(suica):
-    # while True:
-    input_deposit = view.input_deposit(suica)
-    deposit_to_suica(input_deposit)
-    
-    # 入金後のSuicaの残高を表示
-    view.show_suica_balance(suica)
-    
-    # [TODO] whileループするならbreakの条件を追記
+def charge_to_suica(sep_line='', quit='q'):
+    while True:
+        '''
+        Suicaにチャージを選択した場合の処理フロー
+            1. 現在のSuicaの残高を表示
+            2. 入金額を入力
+            3. 入力値のバリデーションチェック（intに変換できるか、負の値ではないか）
+            ---- ここまでwhileループ処理 ----
+            
+            4. Suicaの残高に加算
+            5. 加算後のSuicaの残高を表示
+        '''
+        # 1. 現在のSuicaの残高を表示
+        msg = f'{sep_line}現在のSuicaの残高は {suica.balance}円 です\n'
+        before_deposit = suica.balance
+        
+        # 2. 入金額を入力
+        input_value = view.input_deposit(msg)
+        
+        # quit（q）が入力された場合の処理
+        if input_value == quit:
+            break
+        
+        suica.balance = input_value
+        if suica.balance > before_deposit:
+            print(msg)
+            break
 
 
 # ジュースの購入操作: whileループ
@@ -92,14 +110,14 @@ def purchase_juice(juice_lists, min_price):
     perchased_juice = vending_machine.stocks[i].pop(0)  # pop()によって在庫は1本減る
     
 # Suicaの残高から支払い
-    print(f'購入前のSuicaの残高 {suica.show_balance()}')
+    print(f'購入前のSuicaの残高 {suica.balance}')
     suica.add_balance(-perchased_juice.price)  # ジュースの購入額をSuicaの残高から差し引く
-    print(f'購入後のSuicaの残高 {suica.show_balance()}')
+    print(f'購入後のSuicaの残高 {suica.balance}')
     
 # 自動販売機に売上額を計上
-    print(f'購入前の自販機の売上金合計 {vending_machine.show_balance()}')
+    print(f'購入前の自販機の売上金合計 {vending_machine.proceeds}')
     vending_machine.add_proceeds(perchased_juice.price)
-    print(f'購入後の自販機の売上金合計 {vending_machine.show_balance()}')
+    print(f'購入後の自販機の売上金合計 {vending_machine.proceeds}')
     
     # [TODO] ループするか、モード選択に戻るかの選択 -> view.pyの処理
 
@@ -121,26 +139,26 @@ def replenish_juice(juice_lists):
     # [TODO] ループするか、モード選択に戻るかの選択 -> view.pyの処理
 
 
-# modeを選択 [0: Suicaにチャージ / 残高照会, 1: ジュースの購入, 2: ジュースの補充]
+# mode選択
 def mode_select(options):
     # view.pyの関数を指定: 画面表示 > 標準入力 >バリデーションチェック > 入力値をリターン
-    users_choice = view.is_selectable(options)
-    if users_choice == 'q':
-        print('Good bye!!')
+    selected_option = view.get_selected_option(options)
     
-    return users_choice
+    return selected_option
 
 
-# 初期設定
+# 初期設定 -- constants
 DEFAULT_DEPOSIT = 500
+# MIN_DEPOSIT = 100  # 可能なら定数として設定したい  --> エラーのクラスにどのようにして反映させるか
 JUICE_LISTS = [('ペプシ', 150), ('モンスター', 230), ('いろはす', 120)]
 DEFAULT_NUM = 5
 MODE_OPTIONS = ('Suicaにチャージ', 'ジュースの購入', 'ジュースの補充')
 
-# 最も安いジュースの価格
+# 初期設定値 -- 変数
+sep_line = '=' * 60 + '\n'
 min_price = min([juice[1] for juice in JUICE_LISTS])
 
-# 在庫管理用のリストを生成
+# 初期設定 -- 在庫管理用のリストを生成
 stocks = []
 for i in range(len(JUICE_LISTS)):
     created_list = create_juice(i=i, juice_lists=JUICE_LISTS, num=DEFAULT_NUM)
@@ -150,9 +168,9 @@ for i in range(len(JUICE_LISTS)):
 suica = Suica(DEFAULT_DEPOSIT)
 vending_machine = VendingMachine(stocks)
 
-# [0]:Suicaにチャージ / [1]: ジュースの購入 / [2]: ジュースの補充から選択
-mode = mode_select(MODE_OPTIONS)
 
+# ここからメイン処理（whileループ）
+mode = mode_select(MODE_OPTIONS)
 
 # [0]: Suicaにチャージ
 if mode == '0':
@@ -164,3 +182,10 @@ if mode == '1':
 
 
 # [2]: ジュースの補充
+if mode == '2':
+    pass
+
+
+# [q]: ループ処理の終了
+if mode == 'q':
+    pass
