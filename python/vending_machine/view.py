@@ -2,8 +2,8 @@ import os
 import string
 
 import controller
-from controller import suica
-from controller import vending_machine
+# from controller import suica
+# from controller import vm
 
 
 # 標準入力するための関数
@@ -68,8 +68,8 @@ def input_deposit(msg, quit='q'):
 
 
 # ジュースと在庫本数の表示
-def show_stock_lists(juice_lists):
-    stock_lists = controller.get_stock_lists(juice_list)
+def show_stock_lists(juice_lists, stock_lists):
+    # stock_lists = controller.get_stock_lists(juice_list) 変数stock_listsは渡すべきもの
     for i, juice_list in enumerate(zip(juice_lists, stock_lists)):
         print(f'{i} : {juice_list[0][0]} （{juice_list[0][1]}円）    残り {juice_list}本')
 
