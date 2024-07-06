@@ -38,14 +38,14 @@ from my_exceptions import SmallDepositError
 #         return True
 
 
-def get_balance_sentence():
+def get_balance_msg():
     return f'現在のSuicaの残高は {suica.balance}円 です\n'
 
 
 def charge_to_suica(sep_line='', quit='q'):
     while True:
         # 現在のSuicaの残高を取得
-        view.show_message(sep_line, get_balance_sentence())
+        view.show_message(sep_line, get_balance_msg())
         
         # 入金額を入力
         input_value = view.input_deposit(suica.min_deposit)
@@ -62,7 +62,7 @@ def charge_to_suica(sep_line='', quit='q'):
             continue
         
         additional_msg = f'Suicaに {input_value}円 チャージしました\n'
-        view.show_message(sep_line, get_balance_sentence(), additional_msg)
+        view.show_message(sep_line, get_balance_msg(), additional_msg)
         break
 
 
@@ -92,8 +92,8 @@ def purchase_juice(juice_lists, sep_line='', quit='q'):
         for stock in vm.stocks:
             in_stock_num += len(stock)
         if in_stock_num == 0:
-            sentence = '商品がすべて売り切れです。補充してください\n'
-            view.show_message(sep_line, sentence)
+            msg = '全商品が売り切れです。補充してください\n'
+            view.show_message(sep_line, msg)
             break
         
         # ジュースの最低価格とSuicaの残高の比較
@@ -104,13 +104,14 @@ def purchase_juice(juice_lists, sep_line='', quit='q'):
             additional_msg = ''
         
         # Suica残高表示
-        view.show_message(sep_line, get_balance_sentence(), additional_msg)
-        if not additional_msg:
+        view.show_message(sep_line, get_balance_msg(), additional_msg)
+        if additional_msg:
             break
         
         # 購入処理
         stock_options = get_stock_options(vm.juice_lists, vm.get_stock_nums())
-        selected_option = view.get_selected_option(stock_options, sep_line)
+        msg = '購入したいジュースの番号を選択してください\n'
+        selected_option = view.get_selected_option(stock_options, msg, sep_line)
         
         if selected_option == quit:
             break
@@ -134,28 +135,39 @@ def purchase_juice(juice_lists, sep_line='', quit='q'):
         vm.add_proceeds(amount)
         suica.add_deposit(amount, deposit=False)
         
-        perchased_txt = f'{perchased_juice.name}({amount}円)を購入しました。Suicaの残高は{suica.balance}円です'
-        view.show_message(sep_line, perchased_txt)
+        perchased_msg = f'{perchased_juice.name}({amount}円)を購入しました。Suicaの残高は{suica.balance}円です'
+        view.show_message(sep_line, perchased_msg)
         txt = '続けて購入しますか？'
-        view.input_yes_or_no(txt)
+        res = view.input_yes_or_no(txt)
+        if res == 'n':
+            break
+        else:
+            continue
 
 
 # ジュースの補充: whileループ
-def replenish_juice(juice_lists):
-# 在庫状況の取得
-    view.show_stock_lists(juice_lists)
+def restock_juice(juice_lists, sep_line='', quit='q'):
+    msg = ['補充するジュースの番号を選択してください', '補充するジュースの本数を入力してください > ', '続けて補充しますか？']
     
-# [TODO] 補充したいジュースの選択と本数の入力 --> view.py
-    txt = '補充するジュースの番号を入力してください > '
-    i = view.choose_juice(juice_lists, txt)
-    num = input('補充する本数を入力してください > ') # [TODO] 関数化する
-    # 補充するジュースの生成(引数i, numはview.pyの関数実行時の返り値)
-    replenish_juice = create_juice(i, juice_lists, num)
-    
-    # [TODO] 自動販売機の在庫に生成したジュースを追加　--> extend()を使用する
-    
-    # [TODO] ループするか、モード選択に戻るかの選択 -> view.pyの処理
-
+    while True:
+    # 在庫状況の取得
+        stock_options = get_stock_options(juice_lists, vm.get_stock_nums())
+        selected_option = view.get_selected_option(stock_options, msg[0], sep_line, quit)
+        if selected_option == quit:
+            break
+        else:
+            i = int(selected_option)
+        num = view.input_value_validation(msg[1], quit)
+        if num == quit:
+            break
+        vm.restock(i, num)
+        restocked_msg = f'{juice_lists[i]}を{num}本補充しました'
+        view.show_message(sep_line, restocked_msg)
+        res = view.input_yes_or_no(msg[2])
+        if res == 'n':
+                break
+        else:
+            continue 
 
 # mode選択
 def mode_select(options):

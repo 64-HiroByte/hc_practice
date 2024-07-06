@@ -15,6 +15,10 @@ class Suica(object):
     def balance(self):
         return self.__balance
     
+    @balance.setter
+    def balance(self, new_balance):
+        raise AttributeError('残高を直接変更することは許可されていません。Suicaクラスのメソッドを使用して残高を更新してください')
+    
     def add_deposit(self, amount, deposit=True):
         if deposit:
             if amount >= self.__min_deposit:
@@ -48,9 +52,10 @@ class VendingMachine(object):
         self.__proceeds = 0
         self._juice_lists = juice_lists
         
+        # リスト内包表記にするか検討する
         self._stocks = []
         for i in range(len(juice_lists)):
-            created_list = self.create_juice(i, self._juice_lists, default_num)
+            created_list = self.create_juice(i, juice_lists, default_num)
             self._stocks.append(created_list)
 
     def create_juice(self, i, juice_lists, num):
@@ -70,23 +75,24 @@ class VendingMachine(object):
     def juice_lists(self):
         return self._juice_lists
     
-    
     @property
     def proceeds(self):
         return self.__proceeds  # 自販機の売上金額の取得
     
-    def add_proceeds(self, price):
-        self.__proceeds += price  # 自販機の売上金額に商品代金を加算
+    @proceeds.setter
+    def proceeds(self, amount):
+        raise AttributeError('売上金を直接変更することは許可されていません。VendingMachineクラスのメソッドを使用してu売上金を更新してください')
+    
+    def add_proceeds(self, amount):
+        self.__proceeds += amount  # 自販機の売上金額に商品代金を加算
     
     @property
     def stocks(self):
         return self._stocks  # 自販機の在庫情報の取得
     
-    # 改良予定
-    @stocks.setter
-    def stocks(self, name, quantity):
-        
-        self._stocks[name] += quantity  # 自販機の在庫の加減算
+    def restock(self, i, num):
+        created_juice = self.create_juice(i, self._juice_lists, num)
+        self._stocks[i].extend(created_juice)
     
     def get_stock_nums(self):
         """
@@ -105,7 +111,7 @@ class VendingMachine(object):
     def is_purchasable(self, i, balance):
         if self._juice_lists[i][1] > balance:
             raise InsufficientBalanceError
-        
+    
     def is_in_stock(self, i):
         if self._stocks[i] == []:
             raise NoStockError

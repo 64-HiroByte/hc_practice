@@ -1,6 +1,6 @@
 # 仕切り線付きの標準出力
-def show_message(sep_line='', sentence='', additional_msg=''):
-    print(f'{sep_line}\n{additional_msg}{sentence}')
+def show_message(sep_line='', main_msg='', additional_msg=''):
+    print(f'{sep_line}\n{additional_msg}{main_msg}')
 
 
 # input()のバリデーションチェック int型か正の値か判定　
@@ -28,9 +28,9 @@ def input_deposit(min_deposit, quit='q'):
 
 
 # 標準入力した値が選択肢に含まれているか判定する関数
-def get_selected_option(options, sep_line='', quit='q'):
+def get_selected_option(options, msg, sep_line='', quit='q'):
     selectable_num = [quit]
-    show_options = sep_line
+    show_options = sep_line + msg
     
     for i, option in enumerate(options):
         selectable_num.append(str(i))
