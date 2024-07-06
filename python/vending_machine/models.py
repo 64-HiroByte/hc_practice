@@ -1,24 +1,26 @@
-class SmallDepositError(Exception):
-    def __str__(self):
-        return print('SmallDepositError: 100円未満のチャージはできません')
-
+from my_exceptions import InsufficientBalanceError
+from my_exceptions import SmallDepositError
+    
 class Suica(object):
-    def __init__(self, deposit):
-        self._balance = deposit 
+    def __init__(self, default_deposit, min_deposit):
+        self.__balance = default_deposit
+        self.__min_deposit = min_deposit
     
     @property
     def balance(self):
-        return self._balance
+        return self.__balance
     
-    @balance.setter
-    def balance(self, amount):
-        try:
-            if amount >= 100:
-                self._balance += amount
+    def add_deposit(self, amount, deposit=True):
+        if deposit:
+            if amount >= self.__min_deposit:
+                self.__balance += amount
             else:
-                raise SmallDepositError
-        except SmallDepositError as e:
-            print(e)
+                raise SmallDepositError()
+        else:
+            if self.__balance >= amount:
+                self.__balance -= amount
+            else:
+                raise InsufficientBalanceError()
 
 
 class Juice(object):
