@@ -171,13 +171,12 @@ def restock_juice(juice_lists, sep_line='', quit='q'):
 
 # mode選択
 def mode_select(options):
-    # view.pyの関数を指定: 画面表示 > 標準入力 >バリデーションチェック > 入力値をリターン
     selected_option = view.get_selected_option(options)
     
     return selected_option
 
 
-if __name__ == '__main__':
+def main():
     # 初期設定 -- constants
     DEFAULT_DEPOSIT = 500
     MIN_DEPOSIT = 100
@@ -198,23 +197,23 @@ if __name__ == '__main__':
     suica = Suica(DEFAULT_DEPOSIT, MIN_DEPOSIT)
     vm = VendingMachine(JUICE_LISTS, DEFAULT_NUM)
 
-    # # ここからメイン処理（whileループ）
-    # mode = mode_select(MODE_OPTIONS)
+    while True:
+        juice_lists = vm.juice_lists
+        mode = mode_select(MODE_OPTIONS)
 
-    # # [0]: Suicaにチャージ
-    # if mode == '0':
-    #     charge_to_suica()
+        # [0]: Suicaにチャージ
+        if mode == '0':
+            charge_to_suica(sep_line)
+        # [1]: ジュースの購入
+        if mode == '1':
+            purchase_juice(juice_lists, sep_line)
+        # [2]: ジュースの補充
+        if mode == '2':
+            restock_juice(juice_lists, sep_line)
+        # [q]: ループ処理の終了
+        if mode == 'q':
+            break
 
-    # # [1]: ジュースの購入
-    # if mode == '1':
-    #     purchase_juice(i, JUICE_LISTS)
 
-
-    # # [2]: ジュースの補充
-    # if mode == '2':
-    #     pass
-
-
-    # # [q]: ループ処理の終了
-    # if mode == 'q':
-    #     pass
+if __name__ == '__main__':
+    main()
