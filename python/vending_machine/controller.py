@@ -3,6 +3,7 @@ import view
 from models import Suica
 from models import VendingMachine
 from my_exceptions import InsufficientBalanceError
+from my_exceptions import NoStockError
 from my_exceptions import SmallDepositError
 
 
@@ -65,41 +66,78 @@ def charge_to_suica(sep_line='', quit='q'):
         break
 
 
-# ジュースの購入操作: whileループ
-def purchase_juice(juice_lists, sep_line=''):
+def get_stock_options(juice_lists, stock_nums, purchase=True):
+    stock_options = []
+    for juice_list, stock_num in zip(juice_lists, stock_nums):
+        status = f'残り {stock_num}本'
+        
+        if purchase:
+            if stock_num == 0:
+                status = '売り切れ'
+            elif juice_list[0][1] > suica.balance:
+                status = '残高不足'
+        option = f'{juice_list[0][0]} （{juice_list[0][1]}円）    {status}'
+        stock_options.append(option)
+    return stock_options
+
+
+# ジュースの購入操作
+def purchase_juice(juice_lists, sep_line='', quit='q'):
     # 自販機で扱うジュースの最低価格を取得
     min_price = min([juice[1] for juice in juice_lists])
     
     while True:
-        # Suicaの残高とジュースの在庫の取得、変数に代入
-        balance = suica.balance
-        balance_sentence = get_balance_sentence(sep_line=sep_line)
-        print(balance_sentence)
-
+        # 販売可能な商品の有無
+        in_stock_num = 0
+        for stock in vm.stocks:
+            in_stock_num += len(stock)
+        if in_stock_num == 0:
+            sentence = '商品がすべて売り切れです。補充してください\n'
+            view.show_message(sep_line, sentence)
+            break
+        
         # ジュースの最低価格とSuicaの残高の比較
-        if min_price > balance:
-            print(f'Suicaの残高が不足しています。最低でも{min_price}円以上の残高が必要です')
+        if min_price > suica.balance:
+            # 追加メッセージの設定
+            additional_msg = f'Suicaの残高が不足しています。最低でも{min_price}円以上の残高が必要です\n'
+        else:
+            additional_msg = ''
+        
+        # Suica残高表示
+        view.show_message(sep_line, get_balance_sentence(), additional_msg)
+        if not additional_msg:
             break
         
         # 購入処理
-        options = []
-        for juice_list in range(zip(vm._juice_lists, vm.stocks)):
-            option = f'{juice_list}'
-        txt = '購入したいジュースの番号を入力してください > '
-        i = view.choose_juice(juice_lists, txt)  # 選択したjuice_listsのindex番号 iを取得
-        perchased_juice = vm.stocks[i].pop(0)  # pop()によって在庫は1本減る
+        stock_options = get_stock_options(vm.juice_lists, vm.get_stock_nums())
+        selected_option = view.get_selected_option(stock_options, sep_line)
         
-        # Suicaの残高から支払い
-        print(f'購入前のSuicaの残高 {suica.balance}')
-        suica.add_balance(-perchased_juice.price)  # ジュースの購入額をSuicaの残高から差し引く
-        print(f'購入後のSuicaの残高 {suica.balance}')
+        if selected_option == quit:
+            break
         
-        # 自動販売機に売上額を計上
-        print(f'購入前の自販機の売上金合計 {vm.proceeds}')
-        vm.add_proceeds(perchased_juice.price)
-        print(f'購入後の自販機の売上金合計 {vm.proceeds}')
+        i = int(selected_option)
+        # 購入商品と残高の比較
+        try:
+            vm.is_purchasable(i, suica.balance)
+        except InsufficientBalanceError as e:
+            print(e)
+            continue
+        # 購入商品の在庫確認
+        try:
+            vm.is_in_stock(i)
+        except NoStockError as e:
+            print(e)
+            continue
         
-        # [TODO] ループするか、モード選択に戻るかの選択 -> view.pyの処理
+        perchased_juice = vm.stocks[i].pop(0)
+        amount = perchased_juice.price
+        vm.add_proceeds(amount)
+        suica.add_deposit(amount, deposit=False)
+        
+        perchased_txt = f'{perchased_juice.name}({amount}円)を購入しました。Suicaの残高は{suica.balance}円です'
+        view.show_message(sep_line, perchased_txt)
+        txt = '続けて購入しますか？'
+        view.input_yes_or_no(txt)
 
 
 # ジュースの補充: whileループ
@@ -147,7 +185,6 @@ if __name__ == '__main__':
     # SuicaとVendingMachineクラスのインスタンス化
     suica = Suica(DEFAULT_DEPOSIT, MIN_DEPOSIT)
     vm = VendingMachine(JUICE_LISTS, DEFAULT_NUM)
-    print(f'在庫: {vm.get_stock_nums()}')
 
     # # ここからメイン処理（whileループ）
     # mode = mode_select(MODE_OPTIONS)

@@ -1,4 +1,5 @@
 from my_exceptions import InsufficientBalanceError
+from my_exceptions import NoStockError
 from my_exceptions import SmallDepositError
     
 class Suica(object):
@@ -23,7 +24,7 @@ class Suica(object):
         else:
             if self.__balance >= amount:
                 self.__balance -= amount
-            else:
+            else:  # 出金操作を想定している
                 raise InsufficientBalanceError
 
 
@@ -66,6 +67,11 @@ class VendingMachine(object):
         return created_juice
     
     @property
+    def juice_lists(self):
+        return self._juice_lists
+    
+    
+    @property
     def proceeds(self):
         return self.__proceeds  # 自販機の売上金額の取得
     
@@ -76,6 +82,7 @@ class VendingMachine(object):
     def stocks(self):
         return self._stocks  # 自販機の在庫情報の取得
     
+    # 改良予定
     @stocks.setter
     def stocks(self, name, quantity):
         
@@ -94,4 +101,12 @@ class VendingMachine(object):
             stock_num = [self._juice_lists[i][0], len(self._stocks[i])]
             stock_nums.append(stock_num)
         return stock_nums
+    
+    def is_purchasable(self, i, balance):
+        if self._juice_lists[i][1] > balance:
+            raise InsufficientBalanceError
+        
+    def is_in_stock(self, i):
+        if self._stocks[i] == []:
+            raise NoStockError
 

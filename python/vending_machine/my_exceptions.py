@@ -10,4 +10,4 @@ class InsufficientBalanceError(Exception):
         
 class NoStockError(Exception):
     def __str__(self):
-        return 'NoStockError: 在庫がないため購入できません'
+        return 'NoStockError: 売り切れのため購入できません'
