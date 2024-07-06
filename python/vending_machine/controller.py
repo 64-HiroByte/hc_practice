@@ -1,7 +1,9 @@
-# import view
-# from models import Juice
+import view
+
 from models import Suica
 from models import VendingMachine
+from my_exceptions import InsufficientBalanceError
+from my_exceptions import SmallDepositError
 
 
 # ジュースインスタンスの生成
@@ -18,68 +20,53 @@ from models import VendingMachine
     
 #     return created_juice
 
+# この関数はSuicaクラス内で残高と商品価格を比較するようにしたのでいらないと思うので、一旦コメントアウト
+# def is_purchasable(price):
+#     """
+#     引数priceとSuicaの残高を比較して購入可能か判定する
 
-def is_purchasable(price):
-    """
-    引数priceとSuicaの残高を比較して購入可能か判定する
+#     Args:
+#         price (int): _description_
 
-    Args:
-        price (int): _description_
-
-    Returns:
-        bool: _description_
-    """    
-    if suica.show_balance() < price:
-        return False
-    else:
-        return True
+#     Returns:
+#         bool: _description_
+#     """    
+#     if suica.show_balance() < price:
+#         return False
+#     else:
+#         return True
 
 
-def get_balance_sentence(sep_line=''):
-    return f'{sep_line}現在のSuicaの残高は {suica.balance}円 です\n'
+def get_balance_sentence():
+    return f'現在のSuicaの残高は {suica.balance}円 です\n'
 
 
 def charge_to_suica(sep_line='', quit='q'):
     while True:
-        '''
-        Suicaにチャージを選択した場合の処理フロー
-            1. 現在のSuicaの残高を表示
-            2. 入金額を入力
-            3. 入力値のバリデーションチェック（intに変換できるか、負の値ではないか）
-            ---- ここまでwhileループ処理 ----
-            
-            4. Suicaの残高に加算
-            5. 加算後のSuicaの残高を表示
-        '''
-        # 1. 現在のSuicaの残高を取得
-        balance_sentece = get_balance_sentence(sep_line=sep_line)
-        before_deposit = suica.balance
+        # 現在のSuicaの残高を取得
+        view.show_message(sep_line, get_balance_sentence())
         
-        # 2. 入金額を入力
-        input_value = view.input_deposit(balance_sentece)
+        # 入金額を入力
+        input_value = view.input_deposit(suica.min_deposit)
         
         # quit（q）が入力された場合の処理
         if input_value == quit:
             break
         
-        suica.balance = input_value
-        if suica.balance > before_deposit:
-            print(get_balance_sentence(sep_line=sep_line))
-            break
+        # 入金処理とエラーハンドリング
+        try:
+            suica.add_deposit(input_value)
+        except SmallDepositError as e:
+            print(e)
+            continue
+        
+        additional_msg = f'Suicaに {input_value}円 チャージしました\n'
+        view.show_message(sep_line, get_balance_sentence(), additional_msg)
+        break
 
 
 # ジュースの購入操作: whileループ
 def purchase_juice(juice_lists, sep_line=''):
-    '''
-    - ジュースを選択
-        - Suicaの残高は十分か --> 例外発生させる
-        - 在庫のある商品か --> 例外発生させる
-    
-    - 選択した商品の在庫を-1
-    - 選択した商品代金をSuicaから差し引く
-    - 選択した商品代金を自販機の売上に計上
-    - （ステータス表示）
-    '''
     # 自販機で扱うジュースの最低価格を取得
     min_price = min([juice[1] for juice in juice_lists])
     
@@ -90,8 +77,7 @@ def purchase_juice(juice_lists, sep_line=''):
         print(balance_sentence)
 
         # ジュースの最低価格とSuicaの残高の比較
-        purchasable = is_purchasable(min_price)
-        if not purchasable:
+        if min_price > balance:
             print(f'Suicaの残高が不足しています。最低でも{min_price}円以上の残高が必要です')
             break
         
@@ -144,7 +130,7 @@ def mode_select(options):
 if __name__ == '__main__':
     # 初期設定 -- constants
     DEFAULT_DEPOSIT = 500
-    # MIN_DEPOSIT = 100  # 可能なら定数として設定したい  --> エラーのクラスにどのようにして反映させるか
+    MIN_DEPOSIT = 100
     JUICE_LISTS = [('ペプシ', 150), ('モンスター', 230), ('いろはす', 120)]
     DEFAULT_NUM = 5
     MODE_OPTIONS = ('Suicaにチャージ', 'ジュースの購入', 'ジュースの補充')
@@ -159,7 +145,7 @@ if __name__ == '__main__':
     #     stocks.append(created_list)
 
     # SuicaとVendingMachineクラスのインスタンス化
-    suica = Suica(DEFAULT_DEPOSIT)
+    suica = Suica(DEFAULT_DEPOSIT, MIN_DEPOSIT)
     vm = VendingMachine(JUICE_LISTS, DEFAULT_NUM)
     print(f'在庫: {vm.get_stock_nums()}')
 

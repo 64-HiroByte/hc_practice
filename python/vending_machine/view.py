@@ -1,10 +1,6 @@
 import os
 import string
 
-import controller
-# from controller import suica
-# from controller import vm
-
 
 # 標準入力するための関数
 def input_num(txt):
@@ -20,6 +16,8 @@ def input_num(txt):
     
     return input_value
 
+def show_message(sep_line='', sentence='', additional_msg=''):
+    print(f'{sep_line}\n{additional_msg}{sentence}')
 
 # 標準入力した値が選択肢に含まれているか判定する関数
 def get_selected_option(options, sep_line='', quit='q'):
@@ -61,9 +59,8 @@ def input_value_validation(txt, quit='q'):
 
 
 # Suicaに入金する金額を入力するための関数
-def input_deposit(msg, quit='q'):
-    # show_suica_balance()
-    txt = msg + f'Suicaにチャージする金額を入力してください\n（最低チャージ額: 100円, 前に戻る: "{quit}"） > '
+def input_deposit(min_deposit, quit='q'):
+    txt = f'Suicaにチャージする金額を入力してください\n（最低チャージ額: {min_deposit}円, 前に戻る: "{quit}"） > '
     return input_value_validation(txt)
 
 

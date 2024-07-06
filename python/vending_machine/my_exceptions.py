@@ -6,3 +6,8 @@ class SmallDepositError(Exception):
 class InsufficientBalanceError(Exception):
     def __str__(self):
         return 'InsufficientBalanceError: 残高が不足しているので購入できません'
+
+        
+class NoStockError(Exception):
+    def __str__(self):
+        return 'NoStockError: 在庫がないため購入できません'

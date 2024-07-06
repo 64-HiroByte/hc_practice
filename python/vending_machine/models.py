@@ -7,6 +7,10 @@ class Suica(object):
         self.__min_deposit = min_deposit
     
     @property
+    def min_deposit(self):
+        return self.__min_deposit
+    
+    @property
     def balance(self):
         return self.__balance
     
@@ -15,12 +19,12 @@ class Suica(object):
             if amount >= self.__min_deposit:
                 self.__balance += amount
             else:
-                raise SmallDepositError()
+                raise SmallDepositError
         else:
             if self.__balance >= amount:
                 self.__balance -= amount
             else:
-                raise InsufficientBalanceError()
+                raise InsufficientBalanceError
 
 
 class Juice(object):
@@ -68,7 +72,6 @@ class VendingMachine(object):
     def add_proceeds(self, price):
         self.__proceeds += price  # 自販機の売上金額に商品代金を加算
     
-    # 改善の余地あり
     @property
     def stocks(self):
         return self._stocks  # 自販機の在庫情報の取得
