@@ -103,8 +103,8 @@ class VendingMachine(object):
             list: ジュースの名前[0]と在庫本数[1]のリストを格納した2次元リスト
         """
         stock_nums = []
-        for i in range(len(self._juice_lists)):
-            stock_num = [self._juice_lists[i][0], len(self._stocks[i])]
+        for i in range(len(self._stocks)):
+            stock_num = len(self._stocks[i])
             stock_nums.append(stock_num)
         return stock_nums
     

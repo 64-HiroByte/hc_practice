@@ -7,37 +7,6 @@ from my_exceptions import NoStockError
 from my_exceptions import SmallDepositError
 
 
-# ジュースインスタンスの生成
-# def create_juice(i, juice_lists, num):
-#     """
-#     juice_listsに格納されているジュースを選択して任意の本数インスタンス化する関数
-
-#     Args:
-#         i (int): juice_listsを表示して、標準入力された値（インデックス番号）
-#         juice_lists (list): 使用可能なジュースの名前と値段のlist
-#         num (int): 生成するジュースの本数
-#     """
-#     created_juice = [Juice(name=juice_lists[i][0], price=juice_lists[i][1]) for _ in range(num)]
-    
-#     return created_juice
-
-# この関数はSuicaクラス内で残高と商品価格を比較するようにしたのでいらないと思うので、一旦コメントアウト
-# def is_purchasable(price):
-#     """
-#     引数priceとSuicaの残高を比較して購入可能か判定する
-
-#     Args:
-#         price (int): _description_
-
-#     Returns:
-#         bool: _description_
-#     """    
-#     if suica.show_balance() < price:
-#         return False
-#     else:
-#         return True
-
-
 def get_balance_msg():
     return f'現在のSuicaの残高は {suica.balance}円 です\n'
 
@@ -68,15 +37,18 @@ def charge_to_suica(sep_line='', quit='q'):
 
 def get_stock_options(juice_lists, stock_nums, purchase=True):
     stock_options = []
-    for juice_list, stock_num in zip(juice_lists, stock_nums):
-        status = f'残り {stock_num}本'
+    for i, juice_list, in enumerate(juice_lists):
+        status = f'残り {stock_nums[i]}本'
         
         if purchase:
-            if stock_num == 0:
+            price = f'（{juice_list[1]}円）'
+            if stock_nums[i] == 0:
                 status = '売り切れ'
-            elif juice_list[0][1] > suica.balance:
+            elif juice_list[1] > suica.balance:
                 status = '残高不足'
-        option = f'{juice_list[0][0]} （{juice_list[0][1]}円）    {status}'
+        else:
+            price = ''
+        option = f'{juice_list[0]}{price}    {status}'
         stock_options.append(option)
     return stock_options
 
@@ -130,13 +102,13 @@ def purchase_juice(juice_lists, sep_line='', quit='q'):
             print(e)
             continue
         
-        perchased_juice = vm.stocks[i].pop(0)
-        amount = perchased_juice.price
+        purchased_juice = vm.stocks[i].pop(0)
+        amount = purchased_juice.price
         vm.add_proceeds(amount)
         suica.add_deposit(amount, deposit=False)
         
-        perchased_msg = f'{perchased_juice.name}({amount}円)を購入しました。Suicaの残高は{suica.balance}円です'
-        view.show_message(sep_line, perchased_msg)
+        purchased_msg = f'{purchased_juice.name}({amount}円)を購入しました。Suicaの残高は{suica.balance}円です'
+        view.show_message(sep_line, purchased_msg)
         txt = '続けて購入しますか？'
         res = view.input_yes_or_no(txt)
         if res == 'n':
@@ -147,11 +119,15 @@ def purchase_juice(juice_lists, sep_line='', quit='q'):
 
 # ジュースの補充: whileループ
 def restock_juice(juice_lists, sep_line='', quit='q'):
-    msg = ['補充するジュースの番号を選択してください', '補充するジュースの本数を入力してください > ', '続けて補充しますか？']
+    msg = [
+        '補充するジュースの番号を選択してください',
+        f'補充する本数を入力してください（戻る場合は "{quit}" を入力） > ',
+        '続けて補充しますか？'
+        ]
     
     while True:
     # 在庫状況の取得
-        stock_options = get_stock_options(juice_lists, vm.get_stock_nums())
+        stock_options = get_stock_options(juice_lists, vm.get_stock_nums(), purchase=False)
         selected_option = view.get_selected_option(stock_options, msg[0], sep_line, quit)
         if selected_option == quit:
             break
@@ -161,7 +137,7 @@ def restock_juice(juice_lists, sep_line='', quit='q'):
         if num == quit:
             break
         vm.restock(i, num)
-        restocked_msg = f'{juice_lists[i]}を{num}本補充しました'
+        restocked_msg = f'{juice_lists[i][0]}を{num}本補充しました'
         view.show_message(sep_line, restocked_msg)
         res = view.input_yes_or_no(msg[2])
         if res == 'n':
@@ -170,36 +146,17 @@ def restock_juice(juice_lists, sep_line='', quit='q'):
             continue 
 
 # mode選択
-def mode_select(options):
-    selected_option = view.get_selected_option(options)
+def mode_select(options, sep_line):
+    msg = '何をしますか？'
+    selected_option = view.get_selected_option(options, msg, sep_line)
     
     return selected_option
 
 
 def main():
-    # 初期設定 -- constants
-    DEFAULT_DEPOSIT = 500
-    MIN_DEPOSIT = 100
-    JUICE_LISTS = [('ペプシ', 150), ('モンスター', 230), ('いろはす', 120)]
-    DEFAULT_NUM = 5
-    MODE_OPTIONS = ('Suicaにチャージ', 'ジュースの購入', 'ジュースの補充')
-
-    # 初期設定値 -- 変数
-    sep_line = '=' * 60 + '\n'
-
-    # 初期設定 -- 在庫管理用のリストを生成 --> 自動販売機のコンストラクタに組み込んだ
-    # stocks = []
-    # for i in range(len(JUICE_LISTS)):
-    #     created_list = create_juice(i=i, juice_lists=JUICE_LISTS, num=DEFAULT_NUM)
-    #     stocks.append(created_list)
-
-    # SuicaとVendingMachineクラスのインスタンス化
-    suica = Suica(DEFAULT_DEPOSIT, MIN_DEPOSIT)
-    vm = VendingMachine(JUICE_LISTS, DEFAULT_NUM)
-
     while True:
         juice_lists = vm.juice_lists
-        mode = mode_select(MODE_OPTIONS)
+        mode = mode_select(MODE_OPTIONS, sep_line)
 
         # [0]: Suicaにチャージ
         if mode == '0':
@@ -216,4 +173,14 @@ def main():
 
 
 if __name__ == '__main__':
+    DEFAULT_DEPOSIT = 500
+    MIN_DEPOSIT = 100
+    JUICE_LISTS = [('ペプシ', 150), ('モンスター', 230), ('いろはす', 120)]
+    DEFAULT_NUM = 1
+    MODE_OPTIONS = ('Suicaにチャージ', 'ジュースの購入', 'ジュースの補充')
+
+    # 初期設定値 -- 変数
+    sep_line = '=' * 70 + '\n'
+    suica = Suica(DEFAULT_DEPOSIT, MIN_DEPOSIT)
+    vm = VendingMachine(JUICE_LISTS, DEFAULT_NUM)
     main()

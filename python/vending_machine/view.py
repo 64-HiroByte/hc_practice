@@ -14,7 +14,7 @@ def input_value_validation(txt, quit='q'):
             if input_value <= 0:
                 raise ValueError
         except ValueError:
-            print('[ValueError] 正しい値を入力してください')
+            print('\nValueError: 正しい値を入力してください\n')
             continue
         else:
             break
@@ -43,7 +43,7 @@ def get_selected_option(options, msg, sep_line='', quit='q'):
         if selected_option in selectable_num:
             break
         else:
-            print('\n選択肢の中から番号を選んでください' )
+            print('\n選択肢の中から番号を選んでください\n' )
         
     return selected_option
 
