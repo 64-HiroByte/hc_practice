@@ -102,7 +102,7 @@ class VendingMachine(object):
         InsufficientBalanceError: 残高が不足している場合に発生
         NoStockError: 
     """    
-    # 在庫と売上金の初期設た
+    # 在庫と売上金の初期設定
     def __init__(self, juice_lists, default_num):
         self.__proceeds = 0
         self._juice_lists = juice_lists
