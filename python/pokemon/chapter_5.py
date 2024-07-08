@@ -12,7 +12,6 @@ class Pokemon(metaclass=abc.ABCMeta):
     @abc.abstractmethod # このデコレータをつけたメソッドは継承先でオーバーライド必須(interfaceのようなもの)
     def attack(self):
         print(f'{self.name} のこうげき')
-        
 
 
 class Pikachu(Pokemon):

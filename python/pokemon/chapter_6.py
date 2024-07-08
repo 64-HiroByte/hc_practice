@@ -49,4 +49,4 @@ pika.attack()
 pika.change_name('うんこ')
 print(pika.name)
 pika.name = 'This is your new name'  # name属性に直接書き込み
-print(pika.name)  # 
+print(pika.name)

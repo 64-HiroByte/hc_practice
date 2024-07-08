@@ -7,9 +7,6 @@ class Pokemon(object):
     
     def attack(self):
         print(f'{self.name} のこうげき')
-        
-    # def __del__(self):
-    #     print('デストラクタが呼び出されました')
 
 
 class Pikachu(Pokemon):
@@ -19,15 +16,13 @@ class Pikachu(Pokemon):
         print(f'{self.name} の10万ボルト!')  # subクラスで追加する内容
 
 
-
+# Superクラス（Pokemonクラス）のインスタンス化
 poke = Pokemon(name='リザードン', type1='ほのお', type2='ひこう', hp=100)
 print(poke.name)
 print(poke.type1)
 poke.attack()
 
-# del poke  # デストラクタによるインスタンスの破棄
-
-# サブクラス（Pikachu）のインスタンス化
+# Subクラス（Pikachuクラス）のインスタンス化
 pika = Pikachu(name='ピカチュウ', type1='でんき', type2='', hp=100)
 print(pika.name)
 pika.attack()
