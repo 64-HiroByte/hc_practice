@@ -3,20 +3,20 @@
     email {label: "varchar, not null, uniq"}
     user_name {label: "varchar, not null, uniq"}
     tel {label: "varchar, not null, uniq"}
-    name {label: "varchar, not null"}
+    account_name {label: "varchar, not null"}
     profile_text {label: "varchar"}
     place {label: "varchar"}
     website  {label: "varchar"}
-    birth_date {label: "datatime, not null"}
+    birth_date {label: "datatime"}
     profile_image {label: "binary"}
-    avator_image  {label: "binary"}
+    avatar_image  {label: "binary"}
     created_at {label: "datetime, not null"}
     updated_at {label: "datetime, not null"}
 
 [tweets]
     *id {label: "bigint, not null"}
     user_id{label: "bigint, not null, FK(users)"}
-    contents {label: "varchar, not null"}
+    content {label: "varchar(140), not null"}
     created_at {label: "datetime, not null"}
     updated_at {label: "datetime, not null"}
 
@@ -30,7 +30,7 @@
 
 [likes]
     *id {label: "bigint, not null"}
-    tweet_id{label: "bigint, not null、FK(tweets)"}
+    tweet_id{label: "bigint, not null, FK(tweets)"}
     user_id{label: "bigint, not null, FK(users)"}
     is_like{label: "boolean, not null"}
     created_at {label: "datetime, not null"}
@@ -56,11 +56,11 @@
     *id {label: "bigint, not null"}
     send_user_id {label: "bigint,not null, FK(users)"}
     received_user_id {label: "bigint,not null, FK(users)"}
-    text {label: "varchar, not null"}
+    content {label: "varchar, not null"}
     created_at {label: "datetime, not null"}
     updated_at {label: "datetime, not null"}
 
-# relation
+# Relationships
 users 1--* `tweets`
 users 1--* `followers`
 users 1--* `likes`
