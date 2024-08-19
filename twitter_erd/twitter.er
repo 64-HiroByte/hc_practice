@@ -24,7 +24,6 @@
     *id {label: "bigint, not null"}
     followee_user_id {label: "bigint, not null, FK(users)"}
     follower_user_id {label: "bigint, not null, FK(users)"}
-    is_follow {label: "boolean, not null"}
     created_at {label: "datetime, not null"}
     updated_at {label: "datetime, not null"}
 
@@ -32,7 +31,6 @@
     *id {label: "bigint, not null"}
     tweet_id{label: "bigint, not null, FK(tweets)"}
     user_id{label: "bigint, not null, FK(users)"}
-    is_like{label: "boolean, not null"}
     created_at {label: "datetime, not null"}
     updated_at {label: "datetime, not null"}
 
@@ -40,7 +38,6 @@
     *id {label: "bigint, not null"}
     tweet_id{label: "bigint, not null, FK(tweets)"}
     user_id{label: "bigint, not null, FK(users)"}
-    is_retweet{label: "boolean, not null"}
     created_at {label: "datetime, not null"}
     updated_at {label: "datetime, not null"}
 
@@ -48,7 +45,6 @@
     *id {label: "bigint, not null"}
     tweet_id{label: "bigint, not null, FK(tweets)"}
     user_id{label: "bigint, not null, FK(users)"}
-    is_bookmark{label: "boolean, not null"}
     created_at {label: "datetime, not null"}
     updated_at {label: "datetime, not null"}
 
