@@ -1,0 +1,69 @@
+[users]
+    *id {label: "bigint, not null"}
+    email {label: "varchar, not null, uniq"}
+    user_name {label: "varchar, not null, uniq"}
+    tel {label: "varchar, not null, uniq"}
+    account_name {label: "varchar, not null"}
+    profile_text {label: "varchar"}
+    place {label: "varchar"}
+    website  {label: "varchar"}
+    birth_date {label: "datatime"}
+    profile_image {label: "binary"}
+    avatar_image  {label: "binary"}
+    created_at {label: "datetime, not null"}
+    updated_at {label: "datetime, not null"}
+
+[tweets]
+    *id {label: "bigint, not null"}
+    user_id{label: "bigint, not null, FK(users)"}
+    content {label: "varchar(140), not null"}
+    created_at {label: "datetime, not null"}
+    updated_at {label: "datetime, not null"}
+
+[followers]
+    *id {label: "bigint, not null"}
+    followee_user_id {label: "bigint, not null, FK(users)"}
+    follower_user_id {label: "bigint, not null, FK(users)"}
+    created_at {label: "datetime, not null"}
+    updated_at {label: "datetime, not null"}
+
+[likes]
+    *id {label: "bigint, not null"}
+    tweet_id{label: "bigint, not null, FK(tweets)"}
+    user_id{label: "bigint, not null, FK(users)"}
+    created_at {label: "datetime, not null"}
+    updated_at {label: "datetime, not null"}
+
+[retweets]
+    *id {label: "bigint, not null"}
+    tweet_id{label: "bigint, not null, FK(tweets)"}
+    user_id{label: "bigint, not null, FK(users)"}
+    created_at {label: "datetime, not null"}
+    updated_at {label: "datetime, not null"}
+
+[bookmarks]
+    *id {label: "bigint, not null"}
+    tweet_id{label: "bigint, not null, FK(tweets)"}
+    user_id{label: "bigint, not null, FK(users)"}
+    created_at {label: "datetime, not null"}
+    updated_at {label: "datetime, not null"}
+
+[messages]
+    *id {label: "bigint, not null"}
+    send_user_id {label: "bigint,not null, FK(users)"}
+    received_user_id {label: "bigint,not null, FK(users)"}
+    content {label: "varchar, not null"}
+    created_at {label: "datetime, not null"}
+    updated_at {label: "datetime, not null"}
+
+# Relationships
+users 1--* `tweets`
+users 1--* `followers`
+users 1--* `likes`
+users 1--* `retweets`
+users 1--* `bookmarks`
+users 1--* `messages`
+
+tweets 1--* `likes`
+tweets 1--* `retweets`
+tweets 1--* `bookmarks`
